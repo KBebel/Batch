@@ -1,0 +1,30 @@
+@echo off
+set PATH=c:\Program Files (x86)\WinSCP\;c:\Program Files (x86)\Winrar\
+set logfile="c:\DATATRANSFER\Backup_%date%_%time%.log"
+:start
+d:
+
+@echo %date% - %time%
+@echo MW--GSMDG_FTP Unit uploader
+@echo:
+@echo Podaj statek (0697, 0698, 0XXX, ...)
+set /p varShip=Statek:
+@echo Podaj "Scheibe" (17, 18, YY, ...)
+set /p varScheibe=Scheibe:
+@echo Podaj "Deck" (00, 01, ZZ, ...)
+set /p varDeck=Deck:
+@echo Dla kogo lub poczatek tytulu pliku rar (np. Dla_HS - Dla_HS_Statek_Scheibe_Deck.rar )
+set /p varTxt=Tekst:
+@echo Kopiuje: %varShip% %varScheibe%%varDeck%
+winscp.com /console /command "option batch continue" "open ftp://user:pass@host" "synchronize local d:\DATATRANSFER\_nach_Stettin\auto_Section_uploader\ /catia_daten/mw/mod/C%varShip%STM/ -filemask=%varShip%?110?C?%varScheibe%?%varDeck%?-?--?--*.*" "synchronize local d:\DATATRANSFER\_nach_Stettin\auto_Section_uploader\ /catia_daten/mw/mod/C%varShip%ZNM/ -filemask=%varShip%?110?C?%varScheibe%?%varDeck%?-?--?--*.*" "synchronize local d:\DATATRANSFER\_nach_Stettin\auto_Section_uploader\ /catia_daten/mw/adm/%varShip%/data/MWA/SHD/define/ -filemask=%varShip%?110?C?%varScheibe%?%varDeck%?-?--?--*.def" "exit"
+cd d:\DATATRANSFER\_nach_Stettin\auto_Section_uploader\
+rar m d:\DATATRANSFER\_nach_Stettin\auto_Section_uploader\%varTxt%_%varShip%_%varScheibe%%varDeck%.rar *
+@echo:
+winscp.com /console /command "option batch abort" "open ftp://user:pass@host" "put -delete d:\DATATRANSFER\_nach_Stettin\auto_Section_uploader\%varTxt%_%varShip%_%varScheibe%%varDeck%.rar" "exit"
+@echo:
+@echo Plik %varTxt%_%varShip%_%varScheibe%%varDeck%.rar na serwerze GSMDG
+set choice=
+set /p choice="Chcesz podac kolejna sekcje (t/n)?"
+if not '%choice%'=="set choice:~0,1%
+if '%choice%'=='t' goto start
+exit
