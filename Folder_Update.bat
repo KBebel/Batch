@@ -1,8 +1,8 @@
 @echo off
 set PATH=c:\Program Files (x86)\WinSCP\;c:\Program Files (x86)\Winrar\
 set logfile="d:\DATATRANSFER\Backup_%date%_%time%.log"
-varCatiaFtp = x@x
-varFtp = x@x
+varCatiaFtp = ftp://user:pass@host
+varFtp = ftp://user:pass@host
 
 :start
 d:
